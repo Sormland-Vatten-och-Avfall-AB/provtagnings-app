@@ -1,0 +1,36 @@
+{
+    "fields": [
+        {
+            "label": "Provtagare",
+            "type": "select",
+            "name": "tester",
+            "options": [
+                "Anders Lind",
+                "Billy Örsbrink",
+                "Daniel Bäck-Ekqvist",
+                "Roger Carlsson",
+                "Per Dahlgren",
+                "Emelie Öberg"
+            ],
+            "required": true
+        },
+        {
+            "label": "Provtagningsdatum",
+            "type": "date",
+            "name": "date",
+            "required": true
+        },
+        {
+            "label": "Provtagningstid",
+            "type": "time",
+            "name": "time",
+            "required": true
+        },
+        {
+            "label": "Kommentar",
+            "type": "text",
+            "name": "comment",
+            "required": false
+        }
+    ]
+}

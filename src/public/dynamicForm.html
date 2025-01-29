@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="form-header">Formulär</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Optional styling for the SVG logo */
+        .logo {
+            width: 50px;
+            /* Adjust width as needed */
+            height: auto;
+            /* Maintain aspect ratio */
+        }
+
+        /* Style for the message box overlay */
+        #message-box {
+            position: fixed;
+            /* Fixed positioning to stay on top */
+            top: 10px;
+            /* Distance from the top */
+            left: 10px;
+            /* Distance from the left */
+            z-index: 1050;
+            /* Ensure it's above other elements */
+            min-width: 200px;
+            /* Ensure a minimum width */
+            display: none;
+            /* Start hidden */
+        }
+
+        #message-box.show {
+            display: block;
+            /* Show the message box when needed */
+        }
+
+        .form_header {
+            display: grid;
+            grid-template-columns: 60px auto;
+            /* Fixed space for logo, flexible space for text */
+            column-gap: 20px;
+            /* Add space between logo and text */
+            align-items: start;
+            /* Aligns logo and text at the top */
+        }
+
+        .logo-container {
+            grid-column: 1;
+            /* Logo stays in the first column */
+            grid-row: 1 / span 2;
+            /* Occupies space for both text lines */
+        }
+
+        .text-container {
+            grid-column: 2;
+            /* Text starts in the second column */
+        }
+
+        h1,
+        h2 {
+            margin-top: 20px;
+        }
+
+        .required {
+            color: red;
+            /* Set color to red */
+            margin-left: 0.2em;
+            /* Optional spacing */
+            font-size: 1em;
+            /* Adjust font size as needed */
+        }
+
+        #sub-title {
+            font-size: 1.15rem;
+            /* Optional: Adjust subtitle size */
+            font-weight: 500;
+        }
+
+        #form-title {
+            font-size: 1.15rem;
+            font-weight: 500;
+        }
+
+        #tertiary-title {
+            font-size: 1.15rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body class="container">
+    <!-- SVG Logo -->
+    <div class="d-flex align-items-center mb-3 form_header">
+        <div class="logo-container">
+            <svg class="logo" id="Lager_1" data-name="Lager 1" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 204.81 205.89">
+                <defs>
+                    <style>
+                        .cls-1 {
+                            fill: #009640;
+                        }
+
+                        .cls-2 {
+                            fill: #0080c9;
+                        }
+                    </style>
+                </defs>
+                <path class="cls-1"
+                    d="m202.48,7.71c-2.68-3-20.39-3.88-25.59-3.74-1.78.05-2.45.8-2.8,2.13-.25.96-.87,6.51-1.3,16.81-.69,29.42-4.61,96.59-11.99,125.08-6.84,26.4-12.73,30.99-18.66,29.46-3.06-.79-8.59-3.05-12.56-5.09,0,0-67.27-29.35-73.77-31.04-7.08-1.83-9.74,1.35-10.93,5.94-1.29,4.97.77,34.86.36,43.53-.2,6.28-.6,13.32,6.29,15.1l101.68-.27c8.56,0,10.37-2.21,14.24-17.13,5.75-22.18,10.15-48.6,11.92-70.39,0,0,4.74-64.7,5.3-72.52.64-8.78,16-.72,17.87-4.72,3.41-7.3,2.61-30.15-.07-33.15Z" />
+                <path class="cls-2"
+                    d="m147.06,98.57c4.89-3.65,11.47-8.64,12.95-14.65,3.3-13.44,4.18-60.25-9.65-68.77C132.41,4.09,37.07-7.18,31.73,5.84c-6.67,16.25,11.62,37.15,28.89,54.62l54.31,49.91c5.72,5.69,26.83,23.75,20.42,30.77-5.45,5.97-36.32-23.29-42.48-28.87l-45.65-44.39c-3.8-3.57-11.5-8.08-17.84-9.63-10.74-2.64-15.9,13.38-22.04,38.33-3.73,15.16-9.41,33.29-6.59,44.16,2.68,10.63,10.72,20.13,21.66,22.82,4.41,1.09,7.38-1.03,8.27-4.68,2.55-10.36-19.11-9.99-15.01-26.68,3.25-13.24,19.32-19.86,31.8-16.8,3.84.95,12.82,4.98,16.23,6.84l47.64,26.36c4.66,2.57,24.2,14.81,34.77,1.55,20.49-25.7-22.43-68.2-38.48-80.3-16.71-12.97-69.89-42.59-60.78-55.29,7.2-10.04,91.53,20.65,96.71,60.79.47,3.66-2.86,13.68-4.69,15.59,0,0-2.47,2.7.09,5.49,4.01,4.38,8.1,2.13,8.1,2.13Z" />
+            </svg>
+        </div>
+        <div class="text-container">
+            <!-- First line of text -->
+            <h2 id="sub-title" class="mb-1">Inkommande Dygnsprov (Ink DP)</h2>
+            <!-- Second text line -->
+            <h2 id="form-title">Exempel Formulär</h2>
+            <h2 id="tertiary-title">NullData</h2>
+        </div>
+    </div>
+
+    <!-- Message box for success or error -->
+    <div id="message-box" class="alert" role="alert"></div>
+
+    <form id="dynamic-form" class="mt-3">
+        <!-- Dynamic form fields will be injected here -->
+    </form>
+
+    <script>
+        let hideTimeout;
+
+        function showMessage(message, type) {
+            const messageBox = document.getElementById('message-box');
+            messageBox.innerHTML = message;
+            messageBox.className = `alert alert-${type} show`;
+            messageBox.classList.add('show');
+
+            if (hideTimeout) {
+                clearTimeout(hideTimeout);
+            }
+
+            hideTimeout = setTimeout(() => {
+                messageBox.classList.remove('show');
+            }, 5000)
+        }
+
+        function getFormIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return window.location.pathname.split("/").pop(); // Extract formId from URL
+        }
+
+        async function loadForm(formId) {
+            const response = await fetch(`../api/form/${formId}`);
+
+            if (!response.ok) {
+                showMessage(`Invalid form requested: '${formId}'.`, 'danger');
+            }
+
+            const formConfig = await response.json();
+
+            console.log(formConfig);
+
+            // Update form name
+            document.getElementById("sub-title").innerText = "Verk: " + formConfig.formPosition;
+            document.getElementById("tertiary-title").innerText = "Punkt: " + formConfig.formName;
+            document.getElementById("form-header").innerText = "Provtyp: " + formConfig.formType;
+            document.getElementById("form-title").innerText = "Provtyp: " + formConfig.formType;
+
+            const formElement = document.getElementById("dynamic-form");
+            formElement.innerHTML = ''; // Clear previous form fields
+
+            // Loop over each field in the formConfig array and append it in the order it appears
+            formConfig.fields.forEach(field => {
+                const inputDiv = document.createElement('div');
+                inputDiv.className = 'mb-3';
+
+                // Create label element
+                const label = document.createElement('label');
+
+                if (field.required) {
+                    label.innerHTML = `${field.label}<span class="required" title="Obligatoriskt.">*</span>`; // Add asterisk as a span
+                } else {
+                    label.innerText = field.label; // No asterisk present
+                }
+
+                label.setAttribute('for', field.name); // Set 'for' attribute for accessibility
+                inputDiv.appendChild(label);
+
+                // Create input element based on field type
+                if (field.type === 'select') {
+                    const select = document.createElement('select');
+                    select.name = field.name;
+                    select.id = field.name;
+                    select.className = 'form-control';
+
+                    // Add a default prompt option
+                    const defaultOption = document.createElement('option');
+                    defaultOption.value = ""; // No value for the default prompt
+                    defaultOption.textContent = `-- Vänligen välj ${field.label} --`; // Prompt text
+                    defaultOption.disabled = true; // Disable the default option
+                    defaultOption.selected = true; // Make it selected by default
+                    select.appendChild(defaultOption);
+
+                    // Add options to the select element
+                    field.options.forEach(option => {
+                        const optionElement = document.createElement('option');
+                        optionElement.value = option;
+                        optionElement.innerText = option;
+                        select.appendChild(optionElement);
+                    });
+                    inputDiv.appendChild(select);
+                } else {
+                    const input = document.createElement('input');
+
+                    if (field.type === 'time') {
+                        const now = new Date();
+                        const hours = String(now.getHours()).padStart(2, '0');
+                        const minutes = String(now.getMinutes()).padStart(2, '0');
+                        input.value = `${hours}:${minutes}`; // Set current time in HH:MM format
+                    }
+
+                    if (field.type === 'date') {
+                        const today = new Date();
+                        const year = today.getFullYear();
+                        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+                        const day = String(today.getDate()).padStart(2, '0');
+                        input.value = `${year}-${month}-${day}`; // Set the value in YYYY-MM-DD format
+                    }
+
+                    input.type = field.type;
+                    input.name = field.name;
+                    input.id = field.name;
+                    input.className = 'form-control';
+                    inputDiv.appendChild(input);
+                }
+
+                // Append the inputDiv to the form before the submit button
+                formElement.insertBefore(inputDiv, formElement.querySelector('button'));
+            });
+            // Ensure the submit button is still present
+            const submitButton = document.createElement('button');
+            submitButton.type = 'submit';
+            submitButton.className = 'btn btn-primary mt-3';
+            submitButton.innerText = 'Skicka in provdata';
+            formElement.appendChild(submitButton);
+        }
+
+        // Submit form data
+        async function submitForm(event) {
+            event.preventDefault(); // Prevent default form submission
+            const formData = new FormData(document.getElementById('dynamic-form'));
+            const data = Object.fromEntries(formData.entries()); // Convert form data to an object
+
+            // Ensure formId is included
+            const formId = getFormIdFromURL(); // Extract formId from the URL
+            if (formId) {
+                data.formId = formId; // Include the formId in the data
+            }
+
+            try {
+                const response = await fetch('/submit-form', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data) // Convert data to JSON
+                });
+
+                const result = await response.json(); // Get the response from the server
+
+                // Check if response was successful
+                if (response.ok) {
+                    showMessage(result.message, 'success');
+                    document.getElementById('dynamic-form').reset(); // Clear the form fields
+
+                    // Reset date input with current date
+                    const dateInput = document.getElementById('date');
+                    if (dateInput) {
+                        const today = new Date();
+                        const year = today.getFullYear();
+                        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+                        const day = String(today.getDate()).padStart(2, '0');
+                        dateInput.value = `${year}-${month}-${day}`; // Set the value in YYYY-MM-DD format
+                    }
+
+                    // Reset time input with current time
+                    const timeInput = document.getElementById('time');
+                    if (timeInput) {
+                        const now = new Date();
+                        const hours = String(now.getHours()).padStart(2, '0');
+                        const minutes = String(now.getMinutes()).padStart(2, '0');
+                        timeInput.value = `${hours}:${minutes}`; // Set current time in HH:MM format
+                    }
+                } else {
+                    showMessage(result.message, 'danger');
+                }
+            } catch (error) {
+                console.error("Error submitting form: ", error);
+                showMessage("Ett fel har inträffat, kontaka IT-avdelnignen om problemet kvarstår.", 'danger');
+            }
+        }
+
+
+        // Binds the form submit event
+        document.getElementById('dynamic-form').addEventListener('submit', submitForm);
+
+
+        // Load the form when the page loads
+        const formId = getFormIdFromURL();
+
+        if (formId) {
+            showMessage(`Efterfrågat formulär: ${formId}`, 'warning');
+            loadForm(formId);
+        }
+    </script>
+</body>
+
+</html>

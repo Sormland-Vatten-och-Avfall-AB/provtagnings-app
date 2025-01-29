@@ -1,0 +1,45 @@
+{
+    "fields": [
+        {
+            "label": "Provtagare",
+            "type": "select",
+            "name": "tester",
+            "options": [
+                "Anders Lind",
+                "Billy Örsbrink",
+                "Emelie Öberg",
+                "Per Dahlgren",
+                "Roger Carlsson",
+                "Daniel Bäck-Ekqvist",
+                "Jimmy Nicander",
+                "Jan-Erik Johansson",
+                "Daniel Lindqvist"
+            ],
+            "required": true
+        },
+        {
+            "label": "Provtagningsdatum",
+            "type": "date",
+            "name": "date",
+            "required": true
+        },
+        {
+            "label": "Provtagningstid",
+            "type": "time",
+            "name": "time",
+            "required": true
+        },
+        {
+            "label": "Värde (%TS)",
+            "type": "number",
+            "name": "value",
+            "required": true
+        },
+        {
+            "label": "Kommentar",
+            "type": "text",
+            "name": "comment",
+            "required": false
+        }
+    ]
+}
