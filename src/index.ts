@@ -45,6 +45,16 @@ app.use(
 // Middleware to parse incoming JSON data (needed for form submission)
 app.use(express.json());
 
+app.use((req, res, next) => {
+  const htmlMatch = req.url.match(/^\/(.+)\.html$/);
+  if (htmlMatch) {
+    const route = '/' + htmlMatch[1];
+    console.log(`Redirecting ${req.url} to ${route}`);
+    return res.redirect(route);
+  }
+  next();
+});
+
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, 'public')));
 
