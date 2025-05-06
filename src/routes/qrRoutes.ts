@@ -13,6 +13,10 @@ router.get('/qr=:formType-:formId', (req, res) => {
 
 // Forward to qr-code generation page.
 router.get('/qr-generate', (req, res) => {
+    if (!(req.session as any).loggedIn) {
+        return res.redirect('/admin');  // If not logged in, redirect to login page
+    }
+
     res.sendFile(path.join(__dirname, '../public', 'requestNewQR.html'))
 })
 
