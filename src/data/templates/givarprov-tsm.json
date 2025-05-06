@@ -3,7 +3,7 @@
         {
             "label": "Provtagare",
             "type": "select",
-            "name": "tester",
+            "name": "F",
             "options": [
                 "Anders Lind",
                 "Billy Örsbrink",

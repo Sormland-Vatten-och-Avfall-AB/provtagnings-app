@@ -56,11 +56,6 @@
       "formName": "Suspension"
     },
     {
-      "formId": "gp-flen-sum211",
-      "formPosition": "Flen ARV",
-      "formName": "Suspension"
-    },
-    {
       "formId": "gp-sparreholm-sum201",
       "formPosition": "Sparreholm ARV",
       "formName": "Suspension"
@@ -71,7 +66,7 @@
       "formName": "Suspension"
     },
     {
-      "formId": "gp-hallefornsnas-sum101",
+      "formId": "gp-halleforsnas-sum101",
       "formPosition": "Hälleforsnäs bräddrening",
       "formName": "Suspension"
     },

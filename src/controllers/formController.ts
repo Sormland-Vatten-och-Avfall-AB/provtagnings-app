@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { FormEntry } from "../entity/FormEntry";
+import { FormTypes } from "../entity/FormTypes";
 import path from "path";
 import { promises as fs } from 'fs';
 
@@ -52,37 +53,31 @@ function getFormTypeString(prefix: string): string {
     }
 }
 
-// Load forms dynamically from JSON
-async function loadForms(): Promise<{ [key: string]: FormConfig }> {
-    const filePath = path.join(__dirname, '..', 'data', 'forms.json');
-    const data = await fs.readFile(filePath, 'utf-8');
-    const formsData = JSON.parse(data);
+export async function loadForms(): Promise<{ [key: string]: FormConfig }> {
+    const formTypesRepo = getRepository(FormTypes);
+    const formTypeEntities = await formTypesRepo.find();
 
     const forms: { [key: string]: FormConfig } = {};
 
-
-    // Load each base form from its respective JSON file
-    for (const form of formsData.forms) {
-        console.log(form.formId);
-        const formIDSplit = form.formId.split('-');
-        const templateFormType = getTemplateFormType(form.formId);
-        //console.log(templateFormType);
+    for (const form of formTypeEntities) {
+        const formIDSplit = form.formType.split('-');
+        const templateFormType = getTemplateFormType(form.formType); // You might want to rename this param to match actual field
 
         if (templateFormType) {
             const templateForm = await loadTemplateForm(templateFormType);
             const formTypeString = getFormTypeString(formIDSplit[0]);
 
             let formName = form.formName;
-            if (/^[A-Za-z]/.test(formIDSplit[2])) {
+            if (formIDSplit[2] && /^[A-Za-z]/.test(formIDSplit[2])) {
                 formName = `${formIDSplit[2].toUpperCase()} - ${form.formName}`;
             }
 
-            forms[form.formId] = {
+            forms[form.formType] = {
                 fields: templateForm.fields,
                 formPosition: form.formPosition,
                 formType: formTypeString,
                 formName: formName
-            }
+            };
         }
     }
 
@@ -100,7 +95,7 @@ export const getFormById = async (req: Request, res: Response) => {
         if (formConfig) {
             res.json(formConfig);
         } else {
-            return res.status(404).send("Form not found");
+            return res.status(404).send("Form not found.");
         }
     } catch (err) {
         console.error("Error loading form configurations:", err);

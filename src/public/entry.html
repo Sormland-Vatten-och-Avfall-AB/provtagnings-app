@@ -17,7 +17,7 @@
     async function loadEntryData() {
       // Extract entry ID from the URL
       const urlParams = new URLSearchParams(window.location.search);
-      const entryID = urlParams.get('id'); // Assuming the URL is /entry.html?id=123
+      const entryID = urlParams.get('id');
 
       if (!entryID) {
         document.getElementById('entry-details').innerHTML = '<p>Error: No entry ID provided.</p>';

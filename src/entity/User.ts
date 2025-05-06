@@ -1,14 +1,14 @@
-// src/entity/FormEntry.ts
+// src/entity/User.ts
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
-export class FormEntry {
+export class User {
     @PrimaryGeneratedColumn()
     id!: number;
 
     @Column()
-    formId!: string;
+    username!: string;
 
-    @Column('json')
-    data!: object;
+    @Column()
+    password!: string;
 }

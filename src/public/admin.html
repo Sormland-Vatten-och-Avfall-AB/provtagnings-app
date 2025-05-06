@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Administratörsinloggning</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-5">
+  <!-- Header with Logo and Title -->
+<div class="d-flex align-items-center mb-3">
+  <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 204.81 205.89" style="width: 50px; height: auto; margin-right: 10px;">
+    <defs>
+      <style>
+        .cls-1 { fill: #009640; }
+        .cls-2 { fill: #0080c9; }
+      </style>
+    </defs>
+    <path class="cls-1"
+      d="m202.48,7.71c-2.68-3-20.39-3.88-25.59-3.74-1.78.05-2.45.8-2.8,2.13-.25.96-.87,6.51-1.3,16.81-.69,29.42-4.61,96.59-11.99,125.08-6.84,26.4-12.73,30.99-18.66,29.46-3.06-.79-8.59-3.05-12.56-5.09,0,0-67.27-29.35-73.77-31.04-7.08-1.83-9.74,1.35-10.93,5.94-1.29,4.97.77,34.86.36,43.53-.2,6.28-.6,13.32,6.29,15.1l101.68-.27c8.56,0,10.37-2.21,14.24-17.13,5.75-22.18,10.15-48.6,11.92-70.39,0,0,4.74-64.7,5.3-72.52.64-8.78,16-.72,17.87-4.72,3.41-7.3,2.61-30.15-.07-33.15Z" />
+    <path class="cls-2"
+      d="m147.06,98.57c4.89-3.65,11.47-8.64,12.95-14.65,3.3-13.44,4.18-60.25-9.65-68.77C132.41,4.09,37.07-7.18,31.73,5.84c-6.67,16.25,11.62,37.15,28.89,54.62l54.31,49.91c5.72,5.69,26.83,23.75,20.42,30.77-5.45,5.97-36.32-23.29-42.48-28.87l-45.65-44.39c-3.8-3.57-11.5-8.08-17.84-9.63-10.74-2.64-15.9,13.38-22.04,38.33-3.73,15.16-9.41,33.29-6.59,44.16,2.68,10.63,10.72,20.13,21.66,22.82,4.41,1.09,7.38-1.03,8.27-4.68,2.55-10.36-19.11-9.99-15.01-26.68,3.25-13.24,19.32-19.86,31.8-16.8,3.84.95,12.82,4.98,16.23,6.84l47.64,26.36c4.66,2.57,24.2,14.81,34.77,1.55,20.49-25.7-22.43-68.2-38.48-80.3-16.71-12.97-69.89-42.59-60.78-55.29,7.2-10.04,91.53,20.65,96.71,60.79.47,3.66-2.86,13.68-4.69,15.59,0,0-2.47,2.7.09,5.49,4.01,4.38,8.1,2.13,8.1,2.13Z" />    
+  </svg>
+  <h1 class="mb-0">Administratörsinloggning</h1>
+</div>
+
+  
+  <!-- Alert Section -->
+  <div id="login-alert" class="alert alert-danger d-none mt-3" role="alert">
+    Fel användarnamn eller lösenord
+  </div>
+
+  <form id="login-form" class="mt-4" style="max-width: 400px;">
+    <div class="mb-3">
+      <label for="username" class="form-label">Användarnamn</label>
+      <input type="text" class="form-control" id="username" required>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Lösenord</label>
+      <input type="password" class="form-control" id="password" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Logga in</button>
+  </form>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      // Send login request to the server
+      fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.href = 'dashboard'; // Redirect to the dashboard
+        } else {
+          // Show alert if login fails
+          const alertBox = document.getElementById('login-alert');
+          alertBox.classList.remove('d-none'); // Show the alert
+        }
+      })
+      .catch(error => {
+        console.error('Login failed:', error);
+        alert('An error occurred during login.');
+      });
+    });
+  </script>
+</body>
+</html>
