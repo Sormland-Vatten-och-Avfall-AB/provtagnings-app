@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
-import { FormEntry } from "../entity/FormEntry";
 import { FormTypes } from "../entity/FormTypes";
 import path from "path";
 import { promises as fs } from 'fs';
+import { TypedEntries } from "../entity/TypedEntries";
 
 type FormField = {
     label: string;
@@ -164,7 +164,7 @@ async function validateFormData(formId: string, formData: any): Promise<{ valid:
 export const submitForm = async (req: Request, res: Response): Promise<Response> => {
     const { formId, ...formData } = req.body;
 
-    console.log("Received form submission:", req.body);
+    console.log("Received form suuubmission:", req.body);
 
     // Validate input based on form configuration
     const validation = await validateFormData(formId, formData);
@@ -173,16 +173,34 @@ export const submitForm = async (req: Request, res: Response): Promise<Response>
     }
 
     try {
-        const formEntryRepo = getRepository(FormEntry);
-        const formEntry = new FormEntry();
-        formEntry.formId = formId;
+        const typedEntriesRepository = getRepository(TypedEntries);
+        console.log(formData.typeId);
+        console.log(formData.uniqueId);
+        const typedEntry = await typedEntriesRepository.findOne({ where: {typeId: formData.typeId, uniqueId: formData.uniqueId } });
 
-        // Save the validated data as JSON
-        formEntry.data = formData;
+        if (!typedEntry)
+        {
+            return res.status(400).json({ message: `Ogiltigt formulärs ID.` });
+        }
 
-        await formEntryRepo.save(formEntry);
+        if (typedEntry.formComplete) {
+            return res.status(400).json({ message: `Provet är redan markerat som klart.` });
+        }
 
-        return res.json({ message: "Din provdata har tagit emot, tack!" });
+        delete formData.typeId;
+        delete formData.uniqueId;
+
+        if (formData.F !== undefined) {
+            formData.tester = formData.F;
+            delete formData.F;
+        }
+
+        typedEntry.data = formData;
+        typedEntry.formComplete = true;
+
+        await typedEntriesRepository.save(typedEntry);
+
+        return res.json({ message: "Din provdata har tagits emot, tack!" });
     } catch (error) {
         console.error("Error saving form data:", error);
         return res.status(500).json({ message: "Error saving form data" });

@@ -9,12 +9,13 @@
 <body class="container">
   <h1 class="mt-5">Entry Details</h1>
   <div id="entry-details">
-    <p>Loading...</p>
+    <p>Laddar...</p>
   </div>
   <a href="/entries" class="btn btn-secondary mt-3">Back to All Entries</a>
 
   <script>
     async function loadEntryData() {
+
       // Extract entry ID from the URL
       const urlParams = new URLSearchParams(window.location.search);
       const entryID = urlParams.get('id');
@@ -26,7 +27,7 @@
 
       try {
         // Fetch entry data from the API
-        const response = await fetch(`/api/entries/${entryID}`);
+        const response = await fetch(`/api/entries/id=${entryID}`);
         if (!response.ok) {
           throw new Error('Entry not found');
         }
@@ -34,7 +35,7 @@
 
         // Populate HTML with the fetched data
         document.getElementById('entry-details').innerHTML = `
-          <h2>Entry ID: ${entry.id}</h2>
+          <h2>Entry ID: ${entry.data.value}</h2>
           <h3>Form ID: ${entry.formId}</h3>
           <p>Created At: ${new Date(entry.createdAt).toLocaleString()}</p>
           <h4>Data:</h4>

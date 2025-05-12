@@ -201,7 +201,7 @@
     async function loadEntries() {
       try {
         const response = await fetch('/api/entries');
-        const { formEntries } = await response.json();
+        const { typedEntries } = await response.json();
 
         const formsResponse = await fetch('/api/formDeclarations');
         if (!formsResponse.ok) throw new Error('Failed to fetch form declarations');
@@ -215,21 +215,21 @@
 
         const tbody = document.querySelector('#form-entries-table tbody');
         tbody.innerHTML = '';
-        formEntries.sort((a, b) => b.id - a.id);
+        //typedEntries.sort((a, b) => b.id - a.id);
 
-        formEntries.forEach(entry => {
+        typedEntries.forEach(entry => {
           const row = document.createElement('tr');
           row.classList.add('clickable-row');
           row.addEventListener('click', () => {
-            window.location.href = `/entry.html?id=${entry.id}`;
+            window.location.href = `/entry?id=${entry.typeId}-${entry.uniqueId}`;
           });
 
           const data = typeof entry.data === 'string' ? JSON.parse(entry.data) : entry.data;
-          const formData = formMap[entry.formId] || {};
+          const formData = formMap[formsData[entry.typeId].formType] || {};
           const formName = formData.formName || 'Unknown';
           const formPosition = formData.formPosition || 'Unknown';
 
-          const prefix = entry.formId.substring(0, 2);
+          const prefix = formsData[entry.typeId].formType.substring(0, 2);
           const extraInfo = prefix === 'gp' ? 'Givarprov' : (prefix === 'dv' ? 'Dricksvatten' : '');
 
           row.innerHTML = `
