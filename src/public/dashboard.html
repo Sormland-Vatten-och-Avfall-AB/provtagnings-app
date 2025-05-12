@@ -185,6 +185,15 @@
       padding: 2rem;
       margin: 0;
     }
+
+    .footer {
+      border-top: 1px solid #dee2e6;
+      font-size: 0.85rem;
+    }
+
+    .logout-btn {
+      margin-left: auto; /* Ensures that the logout button is aligned to the right */
+    }
   </style>
 </head>
 <body>
@@ -203,7 +212,6 @@
         d="m147.06,98.57c4.89-3.65,11.47-8.64,12.95-14.65,3.3-13.44,4.18-60.25-9.65-68.77C132.41,4.09,37.07-7.18,31.73,5.84c-6.67,16.25,11.62,37.15,28.89,54.62l54.31,49.91c5.72,5.69,26.83,23.75,20.42,30.77-5.45,5.97-36.32-23.29-42.48-28.87l-45.65-44.39c-3.8-3.57-11.5-8.08-17.84-9.63-10.74-2.64-15.9,13.38-22.04,38.33-3.73,15.16-9.41,33.29-6.59,44.16,2.68,10.63,10.72,20.13,21.66,22.82,4.41,1.09,7.38-1.03,8.27-4.68,2.55-10.36-19.11-9.99-15.01-26.68,3.25-13.24,19.32-19.86,31.8-16.8,3.84.95,12.82,4.98,16.23,6.84l47.64,26.36c4.66,2.57,24.2,14.81,34.77,1.55,20.49-25.7-22.43-68.2-38.48-80.3-16.71-12.97-69.89-42.59-60.78-55.29,7.2-10.04,91.53,20.65,96.71,60.79.47,3.66-2.86,13.68-4.69,15.59,0,0-2.47,2.7.09,5.49,4.01,4.38,8.1,2.13,8.1,2.13Z" />    
     </svg>
     <h1>Adminpanel</h1>
-    <a href="/dashboard" class="btn btn-outline-primary me-2 ms-auto">Startsida</a>
     <button class="btn btn-outline-secondary logout-btn" onclick="logout()">
       <i class="bi bi-box-arrow-right me-2"></i>Logga ut
     </button>
@@ -252,12 +260,14 @@
       .then(data => {
         const latestCommit = data[0];
         const sha = latestCommit.sha.substring(0, 7);
+        const message = latestCommit.commit.message;
         const date = new Date(latestCommit.commit.author.date).toLocaleDateString('sv-SE');
         const commitUrl = latestCommit.html_url;
         const repoUrl = 'https://github.com/Sormland-Vatten-och-Avfall-AB/provtagnings-app';
 
         document.getElementById('commit-info').innerHTML = `
-          Körs från commit <a href="${commitUrl}" target="_blank">${sha}</a> (${date})
+          Körs från commit <a href="${commitUrl}" target="_blank">${sha}</a> (${date}):<br>
+          <em>${message}</em>
           &nbsp;|&nbsp;
           <a href="${repoUrl}" target="_blank" aria-label="GitHub Repository">
             <i class="bi bi-github fs-5 github-icon"></i>
@@ -267,8 +277,15 @@
       .catch(error => {
         console.error('Error fetching commit info:', error);
         document.getElementById('commit-info').innerHTML = `Version kunde ej hämtas. <a href="https://github.com/Sormland-Vatten-och-Avfall-AB/provtagnings-app" target="_blank"><i class="bi bi-github fs-5 github-icon"></i></a>`;
-      });
+    });
   </script>
-
+  <footer class="footer bg-light border-top">
+    <div class="container d-flex justify-content-start" style="padding: 0.25rem 0;">
+      <small class="text-muted" style="font-size: 0.75rem; line-height: 1;">
+        © Sörmland Vatten och Avfall AB&nbsp;&nbsp;&nbsp;&nbsp;Org.nr 556742-9302
+      </small>
+    </div>
+  </footer>
+  
 </body>
 </html>
