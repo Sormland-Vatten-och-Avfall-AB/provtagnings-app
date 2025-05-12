@@ -233,7 +233,7 @@
           const extraInfo = prefix === 'gp' ? 'Givarprov' : (prefix === 'dv' ? 'Dricksvatten' : '');
 
           row.innerHTML = `
-            <td>${entry.id}</td>
+            <td>${entry.typeId}-${entry.uniqueId}</td>
             <td>${extraInfo}</td>
             <td>${formPosition}</td>
             <td>${formName}</td>
