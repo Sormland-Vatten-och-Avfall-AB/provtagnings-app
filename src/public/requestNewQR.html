@@ -15,6 +15,7 @@
       background-color: #f5f7fa;
       font-family: "Segoe UI", sans-serif;
       padding: 2rem;
+      margin: 0;
     }
 
     .header-container {
@@ -49,21 +50,20 @@
     }
 
     .form-card {
-      border-radius: 12px;
-      border: none;
-      transition: transform 0.2s ease, background-color 0.3s ease;
+      transition: background-color 0.3s;
       cursor: pointer;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: none;
     }
 
     .form-card:hover {
-      transform: scale(1.02);
-      background-color: #f8f9fb;
+      background-color: #f1f7fe;
     }
 
-    .form-card.selected {
-      background-color: #e0f7ea;
-      box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+    .selected {
+      background-color: #d1e7dd !important;
+      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
     }
 
     .badge-filter {
@@ -75,55 +75,104 @@
       margin-right: 0.5rem;
     }
 
+    .badge-filter:hover {
+      opacity: 0.9;
+    }
+
+    .form-control:focus {
+      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+
+    .btn-primary {
+      border-radius: 0.5rem;
+      padding: 0.5rem 1.25rem;
+    }
+
+    .btn-outline-primary {
+      color: #0d6efd;
+      border-color: #0d6efd;
+      border-radius: 0.5rem;
+    }
+
+    .btn-outline-primary:hover {
+      background-color: #0d6efd;
+      color: white;
+    }
+
     .qr-preview {
-      display: none;
-    }
-
-    #print-label {
-      display: none;
-    }
-
-    .label-preview {
-      display: flex;
-      justify-content: space-between;
+      border: 1px solid #ccc;
       padding: 1rem;
       border-radius: 12px;
-      background: white;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 650px;
-      margin: 1rem auto;
-      border: 1px dashed #ccc;
-    }
-
-    .label-preview .label-info {
-      flex: 1;
-      padding-right: 2rem;
-    }
-
-    .label-preview img {
-      width: 80px;
-      height: 80px;
-    }
-
-    .loader {
       display: inline-block;
-      width: 1rem;
-      height: 1rem;
-      border: 0.15em solid currentColor;
-      border-right-color: transparent;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      vertical-align: middle;
+      background: #fff;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    /* Label layout */
+    #print-label {
+      width: 10cm;
+      height: 3cm;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.4cm;
+      font-size: 12pt;
+      border: 1px solid #000;
+      box-sizing: border-box;
+      margin: 2rem auto;
+      background: white;
+      page-break-inside: avoid;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    #print-label .label-info {
+      flex: 1;
+      padding-right: 1cm;
+    }
+
+    #print-label canvas {
+      width: 2.5cm !important;
+      height: 2.5cm !important;
+    }
+
+    /* Improved print styles */
+    @media print {
+      @page {
+        size: 10cm 3cm;
+        margin: 0;
+      }
+      
+      body * {
+        visibility: hidden;
+      }
+      
+      body {
+        margin: 0;
+        padding: 0;
+        background: none !important;
+      }
+      
+      #print-label, #print-label * {
+        visibility: visible;
+      }
+      
+      #print-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 10cm;
+        height: 3cm;
+        margin: 0;
+        padding: 0.4cm;
+        border: none;
+        box-shadow: none;
+      }
     }
   </style>
 </head>
 <body>
-
+  
   <!-- Header -->
   <div class="header-container">
     <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 204.81 205.89">
@@ -141,47 +190,32 @@
     <h1>Generera etikett</h1>
     <a href="/dashboard" class="btn btn-outline-primary ms-auto">Startsida</a>
   </div>
-
-  <!-- Controls -->
+  
   <div class="sticky-bar">
-    <div class="mb-3 d-flex justify-content-between align-items-center">
-      <input type="text" id="search-box" class="form-control me-3" style="flex: 1" placeholder="Sök efter provtyp/provpunkt eller verk..." />
-      <select id="sort-select" class="form-select w-auto ms-3">
-        <option value="name">Sortera: Namn (A–Ö)</option>
-        <option value="position">Sortera: Verk</option>
-        <option value="category">Sortera: Kategori</option>
-      </select>
+    <div class="mb-3">
+      <input type="text" id="search-box" class="form-control" placeholder="Sök efter provtyp/provpunkt eller verk..." />
     </div>
     <div class="d-flex justify-content-between align-items-center">
       <div>
         <span class="badge bg-success badge-filter" onclick="filterByCategory('Givarprov')">Givarprov</span>
         <span class="badge bg-info text-dark badge-filter" onclick="filterByCategory('Dricksvatten')">Dricksvatten</span>
-        <span class="badge bg-secondary badge-filter" onclick="clearCategoryFilter()">Alla</span>
+        <span class="badge bg-light text-dark badge-filter" onclick="clearCategoryFilter()">Återställ filter</span>
       </div>
       <button class="btn btn-primary" onclick="generateAndPrintQRCode()">Skriv ut etikett</button>
     </div>
   </div>
 
-  <!-- Alert -->
-  <div id="select-label-alert" class="alert alert-danger d-none mt-3" role="alert">
+  <div id="select-label-alert" class="alert alert-danger d-none" role="alert">
     Vänligen välj en provstyp.
   </div>
 
-  <!-- Label Preview -->
-  <div id="label-preview-container" class="label-preview d-none">
-    <div class="label-info">
-      <div id="preview-name" class="fw-bold"></div>
-      <div id="preview-position" class="text-muted small"></div>
-      <div id="preview-category" class="fst-italic small"></div>
-    </div>
-    <img id="preview-qr" src="" alt="QR Preview" />
-  </div>
+  <div id="form-type-container" class="row g-3 mb-4"></div>
 
-  <!-- Form Cards -->
-  <div class="row row-cols-1 row-cols-md-3 g-3" id="form-type-container"></div>
-
-  <!-- Hidden Label Layout -->
-  <div id="print-label">
+  <!-- Hidden elements for QR generation -->
+  <div id="qr-code" class="qr-preview mx-auto" style="display: none;"></div>
+  
+  <!-- Hidden label-ready layout (for internal use) -->
+  <div id="print-label" style="display: none;">
     <div class="label-info" id="label-info">
       <div id="label-name"></div>
       <div id="label-id" style="font-size: 10pt;"></div>
@@ -191,8 +225,9 @@
   </div>
 
   <script>
-    let allForms = [];
+    let selectedPath = '';
     let selectedForm = null;
+    let allForms = [];
 
     const categoryMap = {
       'GP': 'Givarprov',
@@ -200,18 +235,19 @@
     };
 
     function getCategory(formType) {
-      return categoryMap[formType.substring(0, 2).toUpperCase()] || 'Other';
+      const prefix = formType.substring(0, 2).toUpperCase();
+      return categoryMap[prefix] || 'Other';
     }
 
     async function loadFormTypes() {
       try {
-        const res = await fetch('/api/formDeclarations');
-        const forms = await res.json();
-        allForms = forms.map(f => ({ ...f, category: getCategory(f.formType) }));
+        const response = await fetch('/api/formDeclarations');
+        const formTypes = await response.json();
+        allForms = formTypes.map(f => ({ ...f, category: getCategory(f.formType) }));
         renderForms(allForms);
-      } catch (err) {
+      } catch (error) {
+        console.error('Failed to load form types:', error);
         alert('Kunde inte ladda formulärtyper.');
-        console.error(err);
       }
     }
 
@@ -220,13 +256,15 @@
       container.innerHTML = '';
 
       forms.forEach(form => {
+        const cleanName = form.formName.replace(/\s+/g, '');
+        const path = `/qr=${form.formType}-${cleanName}`;
         const card = document.createElement('div');
-        card.className = 'col';
+        card.className = 'col-md-4 mb-3';
         card.innerHTML = `
-          <div class="card form-card" data-id="${form.id}">
+          <div class="card form-card h-100" data-path="${path}">
             <div class="card-body">
               <h5 class="card-title">${form.formName}</h5>
-              <p class="card-text text-muted">${form.formPosition}</p>
+              <p class="card-text"><strong>Verk:</strong> ${form.formPosition}</p>
               <span class="badge bg-${form.category === 'Givarprov' ? 'success' : form.category === 'Dricksvatten' ? 'info text-dark' : 'secondary'}">
                 ${form.category}
               </span>
@@ -235,135 +273,173 @@
         `;
 
         card.querySelector('.form-card').addEventListener('click', function () {
-          document.querySelectorAll('.form-card').forEach(c => c.classList.remove('selected'));
+          document.querySelectorAll('.form-card').forEach(el => el.classList.remove('selected'));
           this.classList.add('selected');
+          selectedPath = this.dataset.path;
           selectedForm = form;
-          showPreview(form);
         });
+        selectedForm = null;
+        selectedPath = null;
 
         container.appendChild(card);
       });
     }
 
-    function showPreview(form) {
-      const preview = document.getElementById('label-preview-container');
-      preview.classList.remove('d-none');
-
-      document.getElementById('preview-name').textContent = form.formName;
-      document.getElementById('preview-position').textContent = form.formPosition;
-      document.getElementById('preview-category').textContent = form.category;
-
-      const url = `https://labb.svaab.se/qr=${form.id.toString(16)}-preview`;
-      QRCode.toDataURL(url, { width: 80 }, (err, dataUrl) => {
-        if (!err) {
-          document.getElementById('preview-qr').src = dataUrl;
-        }
-      });
-    }
-
+    // Combined function to generate QR code and immediately print
     async function generateAndPrintQRCode() {
-      if (!selectedForm) {
-        document.getElementById('select-label-alert').classList.remove('d-none');
+      if (!selectedPath || !selectedForm) {
+        const alertBox = document.getElementById('select-label-alert');
+        alertBox.classList.remove('d-none'); // Show the alert
+
         setTimeout(() => {
-          document.getElementById('select-label-alert').classList.add('d-none');
+          alertBox.classList.add('d-none');
         }, 2500);
         return;
       }
 
-      const btn = event.target;
-      const originalText = btn.innerHTML;
-      btn.innerHTML = `<span class="loader"></span> Skriver ut...`;
-      btn.disabled = true;
+      // Show loading indicator or message
+      const loadingIndicator = document.createElement('div');
+      loadingIndicator.textContent = 'Förbereder etikett...';
+      loadingIndicator.className = 'alert alert-info';
+      document.querySelector('.sticky-bar').appendChild(loadingIndicator);
+
+      const formData = {
+        formType: selectedForm.id
+      };
 
       try {
-        const res = await fetch('/api/typed-entry', {
+        const response = await fetch('/api/typed-entry', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ formType: selectedForm.id })
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
         });
 
-        const { highestUniqueId } = await res.json();
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const highestUniqueId = data.highestUniqueId;
+
         const fullURL = `https://labb.svaab.se/qr=${selectedForm.id.toString(16)}-${highestUniqueId.toString(16)}`;
 
-        const canvas = document.createElement('canvas');
-        await QRCode.toCanvas(canvas, fullURL, { width: 250 });
+        // Prepare hidden iframe for printing
+        let printFrame = document.getElementById('print-frame');
+        if (!printFrame) {
+          printFrame = document.createElement('iframe');
+          printFrame.id = 'print-frame';
+          printFrame.style.position = 'absolute';
+          printFrame.style.top = '-9999px';
+          printFrame.style.left = '-9999px';
+          printFrame.style.width = '10cm';
+          printFrame.style.height = '3cm';
+          document.body.appendChild(printFrame);
+        }
 
-        const qrDataUrl = canvas.toDataURL();
-
-        const printFrame = document.getElementById('print-frame') || (() => {
-          const f = document.createElement('iframe');
-          f.id = 'print-frame';
-          f.style.position = 'absolute';
-          f.style.top = '-9999px';
-          document.body.appendChild(f);
-          return f;
-        })();
-
-        const doc = printFrame.contentDocument || printFrame.contentWindow.document;
-        doc.open();
-        doc.write(`
-          <html><head><style>
-          @page { size: 10cm 3cm; margin: 0; }
-          body { margin: 0; padding: 0; width: 10cm; height: 3cm; }
-          #label { display: flex; justify-content: space-between; padding: 0.4cm; font-size: 12pt; box-sizing: border-box; background: white; }
-          .info { flex: 1; padding-right: 1cm; }
-          img { width: 2.5cm; height: 2.5cm; }
-          </style></head><body>
-          <div id="label">
-            <div class="info">
-              <div>${selectedForm.formName}</div>
-              <div style="font-size: 10pt;">${selectedForm.formPosition}</div>
-              <div style="font-size: 10pt; font-style: italic;">${selectedForm.category}</div>
+        // Generate QR code to data URL
+        const tempCanvas = document.createElement('canvas');
+        await new Promise((resolve, reject) => {
+          QRCode.toCanvas(tempCanvas, fullURL, { width: 250 }, function(error) {
+            if (error) reject(error);
+            else resolve();
+          });
+        });
+        
+        const qrDataUrl = tempCanvas.toDataURL();
+        
+        // Setup the print document inside the iframe
+        const frameDoc = printFrame.contentDocument || printFrame.contentWindow.document;
+        frameDoc.open();
+        frameDoc.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Etikett</title>
+            <style>
+              @page {
+                size: 10cm 3cm;
+                margin: 0;
+              }
+              body {
+                margin: 0;
+                padding: 0;
+                width: 10cm;
+                height: 3cm;
+              }
+              #print-content {
+                width: 10cm;
+                height: 3cm;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0.4cm;
+                font-size: 12pt;
+                box-sizing: border-box;
+                background: white;
+              }
+              .label-info {
+                flex: 1;
+                padding-right: 1cm;
+              }
+            </style>
+          </head>
+          <body>
+            <div id="print-content">
+              <div class="label-info">
+                <div>${selectedForm.formName}</div>
+                <div style="font-size: 10pt;">${selectedForm.formPosition}</div>
+                <div style="font-size: 10pt; font-style: italic;">${selectedForm.category || getCategory(selectedForm.formType)}</div>
+              </div>
+              <img src="${qrDataUrl}" style="width: 2.5cm; height: 2.5cm;">
             </div>
-            <img src="${qrDataUrl}" />
-          </div>
-          </body></html>
+          </body>
+          </html>
         `);
-        doc.close();
-
+        frameDoc.close();
+        
+        // Wait for the iframe to load the content before printing
         setTimeout(() => {
-          printFrame.contentWindow.focus();
-          printFrame.contentWindow.print();
+          try {
+            printFrame.contentWindow.focus();
+            printFrame.contentWindow.print();
+            loadingIndicator.remove();
+          } catch (e) {
+            console.error('Print failed:', e);
+            alert('Kunde inte skriva ut etiketten. Försök igen.');
+          }
         }, 500);
-      } catch (err) {
-        alert('Fel vid utskrift.');
-        console.error(err);
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
+        
+      } catch (error) {
+        console.error('QR code generation failed:', error);
+        alert('Kunde inte generera QR-kod.');
+        // Remove loading indicator if there was an error
+        loadingIndicator.remove();
       }
     }
 
+    document.getElementById('search-box').addEventListener('input', function () {
+      const value = this.value.toLowerCase();
+      const filtered = allForms.filter(form =>
+        form.formName.toLowerCase().includes(value) ||
+        form.formType.toLowerCase().includes(value) ||
+        form.formPosition.toLowerCase().includes(value)
+      );
+      renderForms(filtered);
+    });
+
     function filterByCategory(category) {
-      renderForms(allForms.filter(f => f.category === category));
+      const filtered = allForms.filter(form => form.category === category);
+      renderForms(filtered);
     }
 
     function clearCategoryFilter() {
       renderForms(allForms);
     }
 
-    document.getElementById('search-box').addEventListener('input', function () {
-      const val = this.value.toLowerCase();
-      const filtered = allForms.filter(f =>
-        f.formName.toLowerCase().includes(val) ||
-        f.formType.toLowerCase().includes(val) ||
-        f.formPosition.toLowerCase().includes(val)
-      );
-      renderForms(filtered);
-    });
-
-    document.getElementById('sort-select').addEventListener('change', function () {
-      const val = this.value;
-      const sorted = [...allForms].sort((a, b) => {
-        if (val === 'name') return a.formName.localeCompare(b.formName);
-        if (val === 'position') return a.formPosition.localeCompare(b.formPosition);
-        if (val === 'category') return a.category.localeCompare(b.category);
-        return 0;
-      });
-      renderForms(sorted);
-    });
-
     window.onload = loadFormTypes;
   </script>
+
 </body>
 </html>
