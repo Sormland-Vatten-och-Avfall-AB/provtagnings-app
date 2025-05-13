@@ -13,20 +13,21 @@ router.get('/qr=:formType-:formId', async (req, res) => {
         const typeId = parseInt(formType, 16);
         const uniqueId = parseInt(formId, 16);
         if (isNaN(typeId) || isNaN(uniqueId)) {
-            return res.status(400).send("Ogiltigt ID.");
+            return res.status(400).sendFile(path.join(__dirname, '../public/errors', '400.html'));
         }
         
         const typedEntriesRepository = getRepository(TypedEntries);
         const entry = await typedEntriesRepository.findOne({ where: { typeId, uniqueId } }); 
         if (!entry) {
-            return res.status(404).send("Ogiltigt ID.");
+            return res.status(400).sendFile(path.join(__dirname, '../public/errors', '400.html'));
         }
 
         const formTypesRepository = getRepository(FormTypes);
         const formTypeTemplate = await formTypesRepository.findOne({ where: { id: typeId }});
 
         if (entry.formComplete === true) {
-            return res.redirect(`/form/${formTypeTemplate?.formType}?id=${typeId}-${uniqueId}`);
+
+            return res.redirect(`/entry?id=${typeId}-${uniqueId}`);
         } else {
             return res.redirect(`/form/${formTypeTemplate?.formType}?id=${typeId}-${uniqueId}`);
         }
