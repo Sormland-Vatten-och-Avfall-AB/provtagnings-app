@@ -164,7 +164,7 @@ async function validateFormData(formId: string, formData: any): Promise<{ valid:
 export const submitForm = async (req: Request, res: Response): Promise<Response> => {
     const { formId, ...formData } = req.body;
 
-    console.log("Received form suuubmission:", req.body);
+    console.log("Received form submission:", req.body);
 
     // Validate input based on form configuration
     const validation = await validateFormData(formId, formData);
