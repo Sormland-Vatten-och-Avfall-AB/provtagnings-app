@@ -104,6 +104,12 @@
         const entry = await response.json();
         const data = typeof entry.data === 'string' ? JSON.parse(entry.data) : entry.data;
 
+        const formTypeResponse = await fetch(`/api/formDeclarations/id=${entryID}`);
+        if (!formTypeResponse.ok) throw new Error('Failed to fetch form declarations');
+        const formTypeData = await formTypeResponse.json();
+
+        console.log(formTypeData);
+
         const dateTimeString = `${data.date}T${data.time}`;
         const formattedDate = new Date(dateTimeString).toLocaleString('sv-SE', {
           weekday: 'short',
@@ -116,21 +122,21 @@
 
         document.getElementById('entry-details').innerHTML = `
           <div class="mb-4">
-            <h4 class="fw-semibold">Intern ID: <span class="text-muted">${entry.typeId}-${entry.uniqueId}</span></h4>
-            <p><strong>Formulär-ID:</strong> <span class="text-muted">${entry.formId || '–'}</span></p>
+            <h4 class="fw-semibold">Provtyp: <span class="text-muted">${formTypeData.formPosition} - ${formTypeData.formName}</span></h4>
+            <p><strong>Intern ID:</strong> <span class="text-muted">${entry.typeId}-${entry.uniqueId}</span></p>
             <p><strong>Skapad:</strong> <span class="text-muted">${formattedDate}</span></p>
           </div>
 
           <h5 class="mb-3">Sammanfattning</h5>
 
-<div class="mb-3">
-  <strong>Värde:</strong>
-  <span class="fs-5 ms-2">${data.value ?? '<em>saknas</em>'}</span>
-</div>
+          <div class="mb-3">
+            <strong>Värde:</strong>
+            <span class="fs-5 ms-2">${data.value ?? '<em>saknas</em>'} ${formTypeData.formValueType ?? ''}</span>
+          </div>
 
-<div class="mb-3">
-  <strong>Kommentar:</strong>
-  <p class="text-muted mb-0 border-start ps-3">${data.comment || '<em>Ingen kommentar</em>'}</p>
+          <div class="mb-3">
+            <strong>Kommentar:</strong>
+            <p class="text-muted mb-0 border-start ps-3">${data.comment || '<em>Ingen kommentar</em>'}</p>
 </div>
 
 <div class="mb-3">

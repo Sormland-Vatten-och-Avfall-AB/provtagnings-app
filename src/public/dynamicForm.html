@@ -167,8 +167,6 @@
 
             const formConfig = await response.json();
 
-            console.log(formConfig);
-
             // Update form name
             document.getElementById("sub-title").innerText = "Verk: " + formConfig.formPosition;
             document.getElementById("tertiary-title").innerText = "Punkt: " + formConfig.formName;
