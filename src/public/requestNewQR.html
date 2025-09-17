@@ -19,7 +19,15 @@
       margin: 0;
     }
 
-    .header-container, .sticky-bar {
+    .header-container {
+      background-color: #fff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .sticky-bar {
       background-color: #fff;
       padding: 1.5rem;
       border-radius: 12px;
@@ -157,7 +165,7 @@
         const data = await response.json();
         const highestUniqueId = data.highestUniqueId;
 
-        const fullURL = `https://labb.svaab.se/qr=${selectedForm.id.toString(16)}-${highestUniqueId.toString(16)}`;
+        const fullURL = `https://labb.sormlandvatten.se/qr=${selectedForm.id.toString(16)}-${highestUniqueId.toString(16)}`;
 
         const tempCanvas = document.createElement('canvas');
         await new Promise((resolve, reject) => {
