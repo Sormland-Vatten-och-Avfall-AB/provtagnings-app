@@ -1,52 +1,155 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Entry Details</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Detaljerad Vy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f5f7fa;
+      font-family: "Segoe UI", sans-serif;
+      padding: 2rem;
+    }
+
+    .header-container {
+      background-color: #fff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo {
+      height: 2.2em;
+      margin-right: 0.75em;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+
+    .card-details {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .table th {
+      width: 30%;
+      white-space: nowrap;
+    }
+
+    .table td {
+      word-break: break-word;
+    }
+
+    .table th.bg-light {
+      background-color: #f8f9fa !important;
+    }
+
+    .border-start {
+      border-left: 3px solid #dee2e6;
+    }
+  </style>
 </head>
-<body class="container">
-  <h1 class="mt-5">Entry Details</h1>
-  <div id="entry-details">
-    <p>Loading...</p>
+<body>
+
+  <!-- Header -->
+  <div class="header-container">
+    <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 204.81 205.89">
+      <defs>
+        <style>
+          .cls-1 { fill: #009640; }
+          .cls-2 { fill: #0080c9; }
+        </style>
+      </defs>
+      <path class="cls-1"
+        d="m202.48,7.71c-2.68-3-20.39-3.88-25.59-3.74-1.78.05-2.45.8-2.8,2.13-.25.96-.87,6.51-1.3,16.81-.69,29.42-4.61,96.59-11.99,125.08-6.84,26.4-12.73,30.99-18.66,29.46-3.06-.79-8.59-3.05-12.56-5.09,0,0-67.27-29.35-73.77-31.04-7.08-1.83-9.74,1.35-10.93,5.94-1.29,4.97.77,34.86.36,43.53-.2,6.28-.6,13.32,6.29,15.1l101.68-.27c8.56,0,10.37-2.21,14.24-17.13,5.75-22.18,10.15-48.6,11.92-70.39,0,0,4.74-64.7,5.3-72.52.64-8.78,16-.72,17.87-4.72,3.41-7.3,2.61-30.15-.07-33.15Z" />
+      <path class="cls-2"
+        d="m147.06,98.57c4.89-3.65,11.47-8.64,12.95-14.65,3.3-13.44,4.18-60.25-9.65-68.77C132.41,4.09,37.07-7.18,31.73,5.84c-6.67,16.25,11.62,37.15,28.89,54.62l54.31,49.91c5.72,5.69,26.83,23.75,20.42,30.77-5.45,5.97-36.32-23.29-42.48-28.87l-45.65-44.39c-3.8-3.57-11.5-8.08-17.84-9.63-10.74-2.64-15.9,13.38-22.04,38.33-3.73,15.16-9.41,33.29-6.59,44.16,2.68,10.63,10.72,20.13,21.66,22.82,4.41,1.09,7.38-1.03,8.27-4.68,2.55-10.36-19.11-9.99-15.01-26.68,3.25-13.24,19.32-19.86,31.8-16.8,3.84.95,12.82,4.98,16.23,6.84l47.64,26.36c4.66,2.57,24.2,14.81,34.77,1.55,20.49-25.7-22.43-68.2-38.48-80.3-16.71-12.97-69.89-42.59-60.78-55.29,7.2-10.04,91.53,20.65,96.71,60.79.47,3.66-2.86,13.68-4.69,15.59,0,0-2.47,2.7.09,5.49,4.01,4.38,8.1,2.13,8.1,2.13Z" />    
+    </svg>
+    <h1>Detaljerad Vy</h1>
+    <a href="/entries" class="btn btn-outline-primary ms-auto">Provtagningar...</a>
   </div>
-  <a href="/entries" class="btn btn-secondary mt-3">Back to All Entries</a>
+
+  <!-- Entry Details -->
+  <div id="entry-details" class="card-details">
+    <p>Laddar...</p>
+  </div>
 
   <script>
     async function loadEntryData() {
-      // Extract entry ID from the URL
       const urlParams = new URLSearchParams(window.location.search);
       const entryID = urlParams.get('id');
 
       if (!entryID) {
-        document.getElementById('entry-details').innerHTML = '<p>Error: No entry ID provided.</p>';
+        document.getElementById('entry-details').innerHTML = '<p class="text-danger">Fel: inget ID angivet.</p>';
         return;
       }
 
       try {
-        // Fetch entry data from the API
-        const response = await fetch(`/api/entries/${entryID}`);
-        if (!response.ok) {
-          throw new Error('Entry not found');
-        }
-        const entry = await response.json();
+        const response = await fetch(`/api/entries/id=${entryID}`);
+        if (!response.ok) throw new Error('Kunde inte hämta posten');
 
-        // Populate HTML with the fetched data
+        const entry = await response.json();
+        const data = typeof entry.data === 'string' ? JSON.parse(entry.data) : entry.data;
+
+        const formTypeResponse = await fetch(`/api/formDeclarations/id=${entryID}`);
+        if (!formTypeResponse.ok) throw new Error('Failed to fetch form declarations');
+        const formTypeData = await formTypeResponse.json();
+
+        console.log(formTypeData);
+
+        const dateTimeString = `${data.date}T${data.time}`;
+        const formattedDate = new Date(dateTimeString).toLocaleString('sv-SE', {
+          weekday: 'short',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
         document.getElementById('entry-details').innerHTML = `
-          <h2>Entry ID: ${entry.id}</h2>
-          <h3>Form ID: ${entry.formId}</h3>
-          <p>Created At: ${new Date(entry.createdAt).toLocaleString()}</p>
-          <h4>Data:</h4>
-          <pre>${JSON.stringify(entry.data, null, 2)}</pre>
+          <div class="mb-4">
+            <h4 class="fw-semibold">Provtyp: <span class="text-muted">${formTypeData.formPosition} - ${formTypeData.formName}</span></h4>
+            <p><strong>Intern ID:</strong> <span class="text-muted">${entry.typeId}-${entry.uniqueId}</span></p>
+            <p><strong>Skapad:</strong> <span class="text-muted">${formattedDate}</span></p>
+          </div>
+
+          <h5 class="mb-3">Sammanfattning</h5>
+
+          <div class="mb-3">
+            <strong>Värde:</strong>
+            <span class="fs-5 ms-2">${data.value ?? '<em>saknas</em>'} ${formTypeData.formValueType ?? ''}</span>
+          </div>
+
+          <div class="mb-3">
+            <strong>Kommentar:</strong>
+            <p class="text-muted mb-0 border-start ps-3">${data.comment || '<em>Ingen kommentar</em>'}</p>
+</div>
+
+<div class="mb-3">
+  <strong>Utfört av:</strong>
+  <span class="text-primary">${data.tester || 'Okänd'}</span>
+</div>
         `;
-      } catch (error) {
-        console.error('Error loading entry data:', error);
-        document.getElementById('entry-details').innerHTML = '<p>Error loading entry details.</p>';
+      } catch (err) {
+        console.error(err);
+        document.getElementById('entry-details').innerHTML = '<p class="text-danger">Fel vid inläsning av data.</p>';
       }
     }
 
-    // Load entry data on page load
     window.onload = loadEntryData;
   </script>
 </body>

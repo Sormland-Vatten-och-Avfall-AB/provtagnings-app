@@ -147,9 +147,15 @@
             }, 5000)
         }
 
-        function getFormIdFromURL() {
+        function getFormIdentifiers() {
             const urlParams = new URLSearchParams(window.location.search);
-            return window.location.pathname.split("/").pop(); // Extract formId from URL
+            const idParam = urlParams.get('id'); // Format: "typeId-uniqueId"
+            const [typeId, uniqueId] = idParam?.split('-').map(Number) ?? [];
+
+            const pathSegments = window.location.pathname.split('/');
+            const formType = decodeURIComponent(pathSegments[pathSegments.indexOf('form') + 1]);
+
+            return { formType, typeId, uniqueId };
         }
 
         async function loadForm(formId) {
@@ -160,8 +166,6 @@
             }
 
             const formConfig = await response.json();
-
-            console.log(formConfig);
 
             // Update form name
             document.getElementById("sub-title").innerText = "Verk: " + formConfig.formPosition;
@@ -254,11 +258,15 @@
             const formData = new FormData(document.getElementById('dynamic-form'));
             const data = Object.fromEntries(formData.entries()); // Convert form data to an object
 
-            // Ensure formId is included
-            const formId = getFormIdFromURL(); // Extract formId from the URL
-            if (formId) {
-                data.formId = formId; // Include the formId in the data
+            const { formType, typeId, uniqueId } = getFormIdentifiers();
+
+            if (!typeId || !uniqueId) {
+                showMessage("Form identifier missing. Cannot submit.", 'danger');
+                return;
             }
+            data.formId = formType;
+            data.typeId = typeId;
+            data.uniqueId = uniqueId;
 
             try {
                 const response = await fetch('/submit-form', {
@@ -304,13 +312,11 @@
         // Binds the form submit event
         document.getElementById('dynamic-form').addEventListener('submit', submitForm);
 
-
         // Load the form when the page loads
-        const formId = getFormIdFromURL();
-
-        if (formId) {
-            showMessage(`Efterfrågat formulär: ${formId}`, 'warning');
-            loadForm(formId);
+        const { formType, typeId, uniqueId } = getFormIdentifiers();
+        if (formType) {
+            showMessage(`Efterfrågat formulär: ${formType}`, 'warning');
+            loadForm(formType);
         }
     </script>
 </body>

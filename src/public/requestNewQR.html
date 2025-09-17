@@ -11,6 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
   <style>
+    /* Keep existing styling */
     body {
       background-color: #f5f7fa;
       font-family: "Segoe UI", sans-serif;
@@ -24,18 +25,6 @@
       border-radius: 12px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
       margin-bottom: 2rem;
-      display: flex;
-      align-items: center;
-    }
-
-    .logo {
-      height: 2.2em;
-      margin-right: 0.75em;
-    }
-
-    h1 {
-      font-size: 1.5rem;
-      margin: 0;
     }
 
     .sticky-bar {
@@ -44,17 +33,14 @@
       border-radius: 12px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
       margin-bottom: 1.5rem;
-      position: sticky;
-      top: 1rem;
-      z-index: 1000;
     }
 
     .form-card {
-      transition: background-color 0.3s;
       cursor: pointer;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
       border: none;
+      transition: background-color 0.3s;
     }
 
     .form-card:hover {
@@ -66,131 +52,17 @@
       box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
     }
 
-    .badge-filter {
-      cursor: pointer;
-      user-select: none;
-      padding: 0.5rem 0.75rem;
-      font-size: 0.9rem;
-      border-radius: 6px;
-      margin-right: 0.5rem;
-    }
-
-    .badge-filter:hover {
-      opacity: 0.9;
-    }
-
-    .form-control:focus {
-      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-    }
-
-    .btn-primary {
-      border-radius: 0.5rem;
-      padding: 0.5rem 1.25rem;
-    }
-
-    .btn-outline-primary {
-      color: #0d6efd;
-      border-color: #0d6efd;
-      border-radius: 0.5rem;
-    }
-
-    .btn-outline-primary:hover {
-      background-color: #0d6efd;
-      color: white;
-    }
-
     .qr-preview {
-      border: 1px solid #ccc;
-      padding: 1rem;
-      border-radius: 12px;
-      display: inline-block;
-      background: #fff;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Label layout */
-    #print-label {
-      width: 10cm;
-      height: 3cm;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.4cm;
-      font-size: 12pt;
-      border: 1px solid #000;
-      box-sizing: border-box;
-      margin: 2rem auto;
-      background: white;
-      page-break-inside: avoid;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-    }
-
-    #print-label .label-info {
-      flex: 1;
-      padding-right: 1cm;
-    }
-
-    #print-label canvas {
-      width: 2.5cm !important;
-      height: 2.5cm !important;
-    }
-
-    /* Improved print styles */
-    @media print {
-      @page {
-        size: 10cm 3cm;
-        margin: 0;
-      }
-      
-      body * {
-        visibility: hidden;
-      }
-      
-      body {
-        margin: 0;
-        padding: 0;
-        background: none !important;
-      }
-      
-      #print-label, #print-label * {
-        visibility: visible;
-      }
-      
-      #print-label {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 10cm;
-        height: 3cm;
-        margin: 0;
-        padding: 0.4cm;
-        border: none;
-        box-shadow: none;
-      }
+      display: none;
     }
   </style>
 </head>
 <body>
-  
-  <!-- Header -->
-  <div class="header-container">
-    <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 204.81 205.89">
-      <defs>
-        <style>
-          .cls-1 { fill: #009640; }
-          .cls-2 { fill: #0080c9; }
-        </style>
-      </defs>
-      <path class="cls-1"
-        d="m202.48,7.71c-2.68-3-20.39-3.88-25.59-3.74-1.78.05-2.45.8-2.8,2.13-.25.96-.87,6.51-1.3,16.81-.69,29.42-4.61,96.59-11.99,125.08-6.84,26.4-12.73,30.99-18.66,29.46-3.06-.79-8.59-3.05-12.56-5.09,0,0-67.27-29.35-73.77-31.04-7.08-1.83-9.74,1.35-10.93,5.94-1.29,4.97.77,34.86.36,43.53-.2,6.28-.6,13.32,6.29,15.1l101.68-.27c8.56,0,10.37-2.21,14.24-17.13,5.75-22.18,10.15-48.6,11.92-70.39,0,0,4.74-64.7,5.3-72.52.64-8.78,16-.72,17.87-4.72,3.41-7.3,2.61-30.15-.07-33.15Z" />
-      <path class="cls-2"
-        d="m147.06,98.57c4.89-3.65,11.47-8.64,12.95-14.65,3.3-13.44,4.18-60.25-9.65-68.77C132.41,4.09,37.07-7.18,31.73,5.84c-6.67,16.25,11.62,37.15,28.89,54.62l54.31,49.91c5.72,5.69,26.83,23.75,20.42,30.77-5.45,5.97-36.32-23.29-42.48-28.87l-45.65-44.39c-3.8-3.57-11.5-8.08-17.84-9.63-10.74-2.64-15.9,13.38-22.04,38.33-3.73,15.16-9.41,33.29-6.59,44.16,2.68,10.63,10.72,20.13,21.66,22.82,4.41,1.09,7.38-1.03,8.27-4.68,2.55-10.36-19.11-9.99-15.01-26.68,3.25-13.24,19.32-19.86,31.8-16.8,3.84.95,12.82,4.98,16.23,6.84l47.64,26.36c4.66,2.57,24.2,14.81,34.77,1.55,20.49-25.7-22.43-68.2-38.48-80.3-16.71-12.97-69.89-42.59-60.78-55.29,7.2-10.04,91.53,20.65,96.71,60.79.47,3.66-2.86,13.68-4.69,15.59,0,0-2.47,2.7.09,5.49,4.01,4.38,8.1,2.13,8.1,2.13Z" />    
-    </svg>
-    <h1>Generera etikett</h1>
-    <a href="/dashboard" class="btn btn-outline-primary ms-auto">Startsida</a>
+  <div class="header-container d-flex align-items-center">
+    <h1 class="me-auto">Generera etikett</h1>
+    <a href="/dashboard" class="btn btn-outline-primary">Startsida</a>
   </div>
-  
+
   <div class="sticky-bar">
     <div class="mb-3">
       <input type="text" id="search-box" class="form-control" placeholder="Sök efter provtyp/provpunkt eller verk..." />
@@ -210,19 +82,6 @@
   </div>
 
   <div id="form-type-container" class="row g-3 mb-4"></div>
-
-  <!-- Hidden elements for QR generation -->
-  <div id="qr-code" class="qr-preview mx-auto" style="display: none;"></div>
-  
-  <!-- Hidden label-ready layout (for internal use) -->
-  <div id="print-label" style="display: none;">
-    <div class="label-info" id="label-info">
-      <div id="label-name"></div>
-      <div id="label-id" style="font-size: 10pt;"></div>
-      <div id="label-category" style="font-size: 10pt; font-style: italic;"></div>
-    </div>
-    <canvas id="label-qr"></canvas>
-  </div>
 
   <script>
     let selectedPath = '';
@@ -246,7 +105,6 @@
         allForms = formTypes.map(f => ({ ...f, category: getCategory(f.formType) }));
         renderForms(allForms);
       } catch (error) {
-        console.error('Failed to load form types:', error);
         alert('Kunde inte ladda formulärtyper.');
       }
     }
@@ -254,78 +112,70 @@
     function renderForms(forms) {
       const container = document.getElementById('form-type-container');
       container.innerHTML = '';
-
       forms.forEach(form => {
-        const cleanName = form.formName.replace(/\s+/g, '');
-        const path = `/qr=${form.formType}-${cleanName}`;
-        const card = document.createElement('div');
-        card.className = 'col-md-4 mb-3';
-        card.innerHTML = `
-          <div class="card form-card h-100" data-path="${path}">
-            <div class="card-body">
-              <h5 class="card-title">${form.formName}</h5>
-              <p class="card-text"><strong>Verk:</strong> ${form.formPosition}</p>
-              <span class="badge bg-${form.category === 'Givarprov' ? 'success' : form.category === 'Dricksvatten' ? 'info text-dark' : 'secondary'}">
-                ${form.category}
-              </span>
+        if (form.formTypeEnabled) {
+          const cleanName = form.formName.replace(/\s+/g, '');
+          const path = `/qr=${form.formType}-${cleanName}`;
+          const card = document.createElement('div');
+          card.className = 'col-md-4 mb-3';
+          card.innerHTML = `
+            <div class="card form-card h-100" data-path="${path}">
+              <div class="card-body">
+                <h5 class="card-title">${form.formName}</h5>
+                <p class="card-text"><strong>Verk:</strong> ${form.formPosition}</p>
+                <span class="badge bg-${form.category === 'Givarprov' ? 'success' : form.category === 'Dricksvatten' ? 'info text-dark' : 'secondary'}">
+                  ${form.category}
+                </span>
+              </div>
             </div>
-          </div>
-        `;
-
-        card.querySelector('.form-card').addEventListener('click', function () {
-          document.querySelectorAll('.form-card').forEach(el => el.classList.remove('selected'));
-          this.classList.add('selected');
-          selectedPath = this.dataset.path;
-          selectedForm = form;
-        });
-        selectedForm = null;
-        selectedPath = null;
-
-        container.appendChild(card);
+          `;
+          card.querySelector('.form-card').addEventListener('click', function () {
+            document.querySelectorAll('.form-card').forEach(el => el.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedPath = this.dataset.path;
+            selectedForm = form;
+          });
+          container.appendChild(card);
+        }
       });
     }
 
-    // Combined function to generate QR code and immediately print
     async function generateAndPrintQRCode() {
       if (!selectedPath || !selectedForm) {
         const alertBox = document.getElementById('select-label-alert');
-        alertBox.classList.remove('d-none'); // Show the alert
-
-        setTimeout(() => {
-          alertBox.classList.add('d-none');
-        }, 2500);
+        alertBox.classList.remove('d-none');
+        setTimeout(() => alertBox.classList.add('d-none'), 2500);
         return;
       }
 
-      // Show loading indicator or message
       const loadingIndicator = document.createElement('div');
       loadingIndicator.textContent = 'Förbereder etikett...';
       loadingIndicator.className = 'alert alert-info';
       document.querySelector('.sticky-bar').appendChild(loadingIndicator);
 
-      const formData = {
-        formType: selectedForm.id
-      };
-
       try {
         const response = await fetch('/api/typed-entry', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ formType: selectedForm.id }),
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
         const data = await response.json();
         const highestUniqueId = data.highestUniqueId;
 
-        const fullURL = `https://labb.svaab.se/qr=${selectedForm.id.toString(16)}-${highestUniqueId.toString(16)}`;
+        const fullURL = `https://labb.sormlandvatten.se/qr=${selectedForm.id.toString(16)}-${highestUniqueId.toString(16)}`;
 
-        // Prepare hidden iframe for printing
+        const tempCanvas = document.createElement('canvas');
+        await new Promise((resolve, reject) => {
+          QRCode.toCanvas(tempCanvas, fullURL, { width: 250 }, function (error) {
+            if (error) reject(error);
+            else resolve();
+          });
+        });
+
+        const qrDataUrl = tempCanvas.toDataURL();
         let printFrame = document.getElementById('print-frame');
         if (!printFrame) {
           printFrame = document.createElement('iframe');
@@ -338,18 +188,6 @@
           document.body.appendChild(printFrame);
         }
 
-        // Generate QR code to data URL
-        const tempCanvas = document.createElement('canvas');
-        await new Promise((resolve, reject) => {
-          QRCode.toCanvas(tempCanvas, fullURL, { width: 250 }, function(error) {
-            if (error) reject(error);
-            else resolve();
-          });
-        });
-        
-        const qrDataUrl = tempCanvas.toDataURL();
-        
-        // Setup the print document inside the iframe
         const frameDoc = printFrame.contentDocument || printFrame.contentWindow.document;
         frameDoc.open();
         frameDoc.write(`
@@ -358,15 +196,15 @@
           <head>
             <title>Etikett</title>
             <style>
-              @page {
-                size: 10cm 3cm;
-                margin: 0;
-              }
+              @page { size: 10cm 3cm; margin: 0; }
               body {
                 margin: 0;
                 padding: 0;
                 width: 10cm;
                 height: 3cm;
+                font-family: "Segoe UI", sans-serif;
+                font-size: 10pt;
+                line-height: 1.2;
               }
               #print-content {
                 width: 10cm;
@@ -375,13 +213,22 @@
                 align-items: center;
                 justify-content: space-between;
                 padding: 0.4cm;
-                font-size: 12pt;
                 box-sizing: border-box;
                 background: white;
               }
               .label-info {
                 flex: 1;
                 padding-right: 1cm;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+              }
+              .label-info div {
+                margin-bottom: 2px;
+              }
+              img {
+                width: 2.5cm;
+                height: 2.5cm;
               }
             </style>
           </head>
@@ -389,32 +236,28 @@
             <div id="print-content">
               <div class="label-info">
                 <div>${selectedForm.formName}</div>
-                <div style="font-size: 10pt;">${selectedForm.formPosition}</div>
-                <div style="font-size: 10pt; font-style: italic;">${selectedForm.category || getCategory(selectedForm.formType)}</div>
+                <div>${selectedForm.formPosition}</div>
+                <div style="font-style: italic;">${selectedForm.category || getCategory(selectedForm.formType)}</div>
               </div>
-              <img src="${qrDataUrl}" style="width: 2.5cm; height: 2.5cm;">
+              <img src="${qrDataUrl}">
             </div>
           </body>
           </html>
         `);
         frameDoc.close();
-        
-        // Wait for the iframe to load the content before printing
+
         setTimeout(() => {
           try {
             printFrame.contentWindow.focus();
             printFrame.contentWindow.print();
             loadingIndicator.remove();
           } catch (e) {
-            console.error('Print failed:', e);
-            alert('Kunde inte skriva ut etiketten. Försök igen.');
+            alert('Kunde inte skriva ut etiketten.');
+            loadingIndicator.remove();
           }
         }, 500);
-        
       } catch (error) {
-        console.error('QR code generation failed:', error);
         alert('Kunde inte generera QR-kod.');
-        // Remove loading indicator if there was an error
         loadingIndicator.remove();
       }
     }
@@ -430,8 +273,7 @@
     });
 
     function filterByCategory(category) {
-      const filtered = allForms.filter(form => form.category === category);
-      renderForms(filtered);
+      renderForms(allForms.filter(form => form.category === category));
     }
 
     function clearCategoryFilter() {
@@ -440,6 +282,5 @@
 
     window.onload = loadFormTypes;
   </script>
-
 </body>
 </html>

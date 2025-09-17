@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Administratörsvy</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
+
   <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -44,6 +44,9 @@
       padding: 1.5rem;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
       margin-bottom: 1.5rem;
+      position: sticky;
+      top: 1rem;
+      z-index: 998;
     }
 
     .data-table-container {
@@ -55,6 +58,12 @@
 
     .clickable-row {
       cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .clickable-row:hover {
+      background-color: #f4f8fc;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
     }
 
     table.dataTable thead th {
@@ -64,6 +73,10 @@
     table.dataTable td, table.dataTable th {
       vertical-align: middle;
       padding: 0.5rem 0.75rem;
+    }
+
+    table.dataTable tbody tr:nth-child(odd) {
+      background-color: #f9fbfd;
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button.current {
@@ -83,6 +96,11 @@
 
     .form-select, .form-control {
       min-width: 200px;
+    }
+
+    .form-label {
+      font-weight: 600;
+      font-size: 0.95rem;
     }
 
     .form-control:focus {
@@ -121,11 +139,26 @@
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
       margin-top: 1.5rem;
     }
+
+    .loader {
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid #fff;
+      border-right-color: transparent;
+      border-radius: 50%;
+      display: inline-block;
+      vertical-align: middle;
+      animation: spin 0.6s linear infinite;
+      margin-left: 0.5rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
-
-  <!-- Header -->
   <div class="header-container">
     <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 204.81 205.89">
       <defs>
@@ -143,7 +176,6 @@
     <a href="/dashboard" class="btn btn-outline-primary ms-auto">Startsida</a>
   </div>
 
-  <!-- Filters -->
   <div class="filter-row">
     <div class="row align-items-center">
       <div class="col-md-6">
@@ -163,17 +195,16 @@
     </div>
   </div>
 
-  <!-- Table -->
   <div class="data-table-container">
     <table id="form-entries-table" class="table table-striped align-middle w-100">
       <thead>
         <tr>
-          <th>Internt ID</th>
-          <th>Provtyp</th>
-          <th>Verk</th>
-          <th>Position</th>
-          <th>Provtagare</th>
-          <th>Datum & tid</th>
+          <th><i class="bi bi-hash"></i> Internt ID</th>
+          <th><i class="bi bi-card-text"></i> Provtyp</th>
+          <th><i class="bi bi-geo"></i> Verk</th>
+          <th><i class="bi bi-pin-map"></i> Position</th>
+          <th><i class="bi bi-person"></i> Provtagare</th>
+          <th><i class="bi bi-calendar3"></i> Datum & tid</th>
           <th class="text-end">Välj</th>
         </tr>
       </thead>
@@ -181,18 +212,17 @@
     </table>
   </div>
 
-  <!-- Export Controls -->
-  <div class="controls-container">
-    <div class="d-flex align-items-center justify-content-end gap-3">
+  <div class="controls-container d-flex justify-content-between align-items-center">
+    <div>
       <div class="form-check mb-0">
         <input type="checkbox" id="select-all" class="form-check-input">
         <label for="select-all" class="form-check-label" id="select-all-label">Markera alla</label>
+        <span id="selected-counter" class="badge bg-primary ms-2">0 valda</span>
       </div>
-      <button id="print-selected" class="btn btn-primary">Exportera valda</button>
     </div>
+    <button id="print-selected" class="btn btn-primary">Exportera valda</button>
   </div>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
@@ -201,11 +231,9 @@
     async function loadEntries() {
       try {
         const response = await fetch('/api/entries');
-        const { formEntries } = await response.json();
-
+        const { typedEntries } = await response.json();
         const formsResponse = await fetch('/api/formDeclarations');
         if (!formsResponse.ok) throw new Error('Failed to fetch form declarations');
-
         const formsData = await formsResponse.json();
 
         const formMap = formsData.reduce((acc, form) => {
@@ -215,25 +243,24 @@
 
         const tbody = document.querySelector('#form-entries-table tbody');
         tbody.innerHTML = '';
-        formEntries.sort((a, b) => b.id - a.id);
 
-        formEntries.forEach(entry => {
+        typedEntries.forEach(entry => {
           const row = document.createElement('tr');
           row.classList.add('clickable-row');
           row.addEventListener('click', () => {
-            window.location.href = `/entry.html?id=${entry.id}`;
+            window.location.href = `/entry?id=${entry.typeId}-${entry.uniqueId}`;
           });
 
           const data = typeof entry.data === 'string' ? JSON.parse(entry.data) : entry.data;
-          const formData = formMap[entry.formId] || {};
+          const formData = formMap[formsData[entry.typeId].formType] || {};
           const formName = formData.formName || 'Unknown';
           const formPosition = formData.formPosition || 'Unknown';
 
-          const prefix = entry.formId.substring(0, 2);
+          const prefix = formsData[entry.typeId].formType.substring(0, 2);
           const extraInfo = prefix === 'gp' ? 'Givarprov' : (prefix === 'dv' ? 'Dricksvatten' : '');
 
           row.innerHTML = `
-            <td>${entry.id}</td>
+            <td>${entry.typeId}-${entry.uniqueId}</td>
             <td>${extraInfo}</td>
             <td>${formPosition}</td>
             <td>${formName}</td>
@@ -257,13 +284,11 @@
     }
 
     function updateSelectAllState() {
-      const total = document.querySelectorAll('.entry-checkbox').length;
-      const checked = document.querySelectorAll('.entry-checkbox:checked').length;
-      const selectAll = document.getElementById('select-all');
-      const label = document.getElementById('select-all-label');
-
-      selectAll.checked = total > 0 && checked === total;
-      label.textContent = selectAll.checked ? 'Avmarkera alla' : 'Markera alla';
+      const checkboxes = document.querySelectorAll('.entry-checkbox');
+      const checked = document.querySelectorAll('.entry-checkbox:checked');
+      document.getElementById('select-all').checked = checkboxes.length === checked.length;
+      document.getElementById('select-all-label').textContent = checkboxes.length === checked.length ? 'Avmarkera alla' : 'Markera alla';
+      document.getElementById('selected-counter').textContent = `${checked.length} valda`;
     }
 
     window.onload = async function () {
@@ -306,8 +331,18 @@
       });
 
       $('#print-selected').on('click', function () {
+        const btn = this;
+        const original = btn.innerHTML;
+        btn.innerHTML = 'Exporterar <span class="loader"></span>';
+        btn.disabled = true;
+
         const selectedIds = Array.from(document.querySelectorAll('.entry-checkbox:checked')).map(cb => cb.value);
-        alert('Selected IDs: ' + selectedIds.join(', '));
+
+        setTimeout(() => {
+          alert('Selected IDs: ' + selectedIds.join(', '));
+          btn.innerHTML = original;
+          btn.disabled = false;
+        }, 1000);
       });
     };
   </script>

@@ -58,8 +58,12 @@ app.use((req, res, next) => {
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/', (req, res) => {
+  res.redirect('/dashboard');
+});
+
 // Load routes
-app.use("/", formRoutes, adminRoutes, apiRoutes, qrRoutes);
+app.use("/", adminRoutes, formRoutes, apiRoutes, qrRoutes);
 
 // Handle form submission (if needed as a separate route)
 app.post('/submit-form', submitForm);

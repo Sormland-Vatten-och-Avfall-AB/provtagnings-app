@@ -13,4 +13,10 @@ export class FormTypes {
 
     @Column()
     formName!: string;
+
+    @Column({ nullable: true })
+    formValueType?: string;
+
+    @Column({ default: 'true' })
+    formTypeEnabled!: boolean;
 }

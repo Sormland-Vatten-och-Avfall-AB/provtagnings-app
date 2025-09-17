@@ -1,14 +1,40 @@
 // src/routes/qrRoutes.ts
 import { Router } from "express";
 import path from 'path';
+import { TypedEntries } from "../entity/TypedEntries";
+import { getRepository } from "typeorm";
+import { FormTypes } from "../entity/FormTypes";
 
 const router = Router();
 
-router.get('/qr=:formType-:formId', (req, res) => {
-    const { formType, formId } = req.params;
-    console.log(`Form Type: ${parseInt(formType, 16)}, Form ID: ${parseInt(formId, 16)}`);
-    
-    res.send(`Processing form type: ${formType} with ID: ${formId}`);
+router.get('/qr=:formType-:formId', async (req, res) => {
+    try {
+        const { formType, formId } = req.params;
+        const typeId = parseInt(formType, 16);
+        const uniqueId = parseInt(formId, 16);
+        if (isNaN(typeId) || isNaN(uniqueId)) {
+            return res.status(400).sendFile(path.join(__dirname, '../public/errors', '400.html'));
+        }
+        
+        const typedEntriesRepository = getRepository(TypedEntries);
+        const entry = await typedEntriesRepository.findOne({ where: { typeId, uniqueId } }); 
+        if (!entry) {
+            return res.status(400).sendFile(path.join(__dirname, '../public/errors', '400.html'));
+        }
+
+        const formTypesRepository = getRepository(FormTypes);
+        const formTypeTemplate = await formTypesRepository.findOne({ where: { id: typeId }});
+
+        if (entry.formComplete === true) {
+
+            return res.redirect(`/entry?id=${typeId}-${uniqueId}`);
+        } else {
+            return res.redirect(`/form/${formTypeTemplate?.formType}?id=${typeId}-${uniqueId}`);
+        }
+    } catch (error) {
+        console.error("Error fetching entry:", error);
+        res.status(500).send("Internal server error.");
+    }
 });
 
 // Forward to qr-code generation page.

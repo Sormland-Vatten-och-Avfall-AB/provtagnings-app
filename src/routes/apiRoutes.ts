@@ -2,7 +2,6 @@
 import { Router } from 'express';
 import { getFormById, submitForm } from '../controllers/formController';
 import { getRepository } from 'typeorm';
-import { FormEntry } from '../entity/FormEntry';
 import { FormTypes } from '../entity/FormTypes';
 import { TypedEntries } from '../entity/TypedEntries';
 
@@ -17,22 +16,23 @@ router.post("/api/form/:formId/submit", submitForm);
 // GET route for form* retrieval 
 router.get('/api/entries', async (req, res) => {
     try {
-        const formEntryRepo = getRepository(FormEntry);
-        const formEntries = await formEntryRepo.find();
-
-        res.json({ formEntries });
+        const typedEntriesRepo = getRepository(TypedEntries);
+        const typedEntries = await typedEntriesRepo.find({ where: {formComplete: true}});
+        res.json({ typedEntries });
     } catch (error) {
         console.error("Error fetching entries: ", error);
         res.status(500).json({ message: "Error fetching entries." });
     }
 });
 
-// GET route to retrieve a specific entry by ID
-router.get('/api/entries/:id', async (req, res) => {
-    const entryID = Number(req.params.id); 
+// GET route to retrieve a specific entry by ID - REDO
+router.get('/api/entries/id=:formType-:formId', async (req, res) => {
     try {
-        const formEntryRepo = getRepository(FormEntry);
-        const entry = await formEntryRepo.findOne({ where: { id: entryID } });
+        const { formType, formId } = req.params;
+        const typeId = parseInt(formType, 10);
+        const uniqueId = parseInt(formId, 10);
+        const typedEntriesRepository = getRepository(TypedEntries);
+        const entry = await typedEntriesRepository.findOne({ where: { typeId, uniqueId } });
 
         if (!entry) {
             return res.status(404).json({ message: "Entry not found" });
@@ -49,7 +49,7 @@ router.get("/api/formDeclarations", async (req, res) => {
     try {
         const formTypesRepo = getRepository(FormTypes);
         const formTypes = await formTypesRepo.find({
-            select: ["id", "formType", "formPosition", "formName"], 
+            select: ["id", "formType", "formPosition", "formName", "formValueType", "formTypeEnabled"], 
         });
         res.json(formTypes);
     } catch (error) {
@@ -57,6 +57,25 @@ router.get("/api/formDeclarations", async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+router.get('/api/formDeclarations/id=:formTypeRequest-:formId', async (req, res) => {
+    try {
+        const { formTypeRequest } = req.params;
+        const formTypeId = parseInt(formTypeRequest, 10);
+
+        const formTypesRepo = getRepository(FormTypes);
+        const formType = await formTypesRepo.findOne({  where: {id: formTypeId } });
+
+        if (!formType) {
+            return res.status(404).json({ message: "Form type not found" });
+        }
+
+        res.json(formType);
+    } catch (error) {
+        console.log('Error fetching form type declaration:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+})
 
 router.post('/api/typed-entry', async (req, res) => {
     try {

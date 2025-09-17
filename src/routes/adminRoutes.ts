@@ -4,7 +4,6 @@ import path from 'path';
 import { User } from '../entity/User';
 import { getRepository } from 'typeorm';
 
-
 const router = Router();
 
 // Admin login page
